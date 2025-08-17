@@ -2,6 +2,7 @@ from sqladmin import ModelView
 
 from src.basket.model.sqlalchemy import (
     Basket,
+    BasketLine,
 )
 
 
@@ -15,5 +16,13 @@ class BasketAdmin(ModelView, model=Basket):
     category = ADMIN_CATEGORY
 
 
+class BasketLineAdmin(ModelView, model=BasketLine):
+    column_list = [BasketLine.id, BasketLine.basket_id, BasketLine.quantity, BasketLine.price]
+    column_searchable_list = [BasketLine.basket_id, BasketLine.quantity, BasketLine.price]
+    icon = 'fa-solid fa-chart-line'
+    category = ADMIN_CATEGORY
+
+
 def register_basket_admin_views(admin):
     admin.add_view(BasketAdmin)
+    admin.add_view(BasketLineAdmin)

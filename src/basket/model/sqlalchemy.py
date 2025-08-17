@@ -23,3 +23,15 @@ class Basket(Base):
     status = Column(Enum(Status))
 
     user = relationship('User', back_populates='basket')
+    lines = relationship('BasketLine', back_populates='basket')
+
+
+class BasketLine(Base):
+    __tablename__ = 'basketline'
+
+    id = Column(Integer, primary_key=True, index=True)
+    basket_id = Column(Integer, ForeignKey('baskets.id'), nullable=False)
+    quantity = Column(Integer, nullable=False)
+    price = Column(DECIMAL)
+
+    basket = relationship('Basket', back_populates='lines')
