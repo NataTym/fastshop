@@ -63,3 +63,4 @@ class BaseSQLAlchemyRepository(Generic[T, PType]):
         result = await self.session.execute(stmt)
         instances = result.scalars().all()
         return [self.pydantic_model.model_validate(instance) for instance in instances]
+

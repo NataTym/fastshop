@@ -6,4 +6,5 @@ class UserManagementRoutesPrefixes:
 
 
 class UserRoutesPrefixes(BaseCrudPrefixes):
-    ...
+    address: str = '/address'
+    detail: str = '/detail'

@@ -4,5 +4,7 @@ class BaseRoutesPrefixes:
     openapi: str = '/openapi.json'
 
     catalogue: str = '/catalogue'
-    authentication: str = '/auth'
+    authentication: str = ''
+#    authentication: str = '/auth'
     account: str = '/account'
+
