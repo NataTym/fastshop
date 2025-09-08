@@ -8,25 +8,9 @@ from pydantic import (
 )
 
 
-# class BaseProductAnalytics(BaseModel):
-#     product_id: int
-#     timestamp: datetime
-
-
-# class ProductAnalytics(Document, BaseProductAnalytics):
-#     visits: list[BaseProductAnalytics] =[]
-#
-#     class Settings:
-#         name = 'analytics'
-
-
-class BaseProductAnalytics(BaseModel):
-    timestamp: datetime
-
-
 class ProductAnalytics(Document):
     product_id: int
-    visits: list[BaseProductAnalytics] = []
+    timestamp: datetime
 
     class Settings:
         name = 'analytics'
