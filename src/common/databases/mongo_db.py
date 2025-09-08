@@ -4,6 +4,7 @@ Provide connection to MongoDB. Default database "casafari".
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 
+from src.analytics.models.mongo import ProductAnalytics
 from src.base_settings import base_settings
 from src.common.singleton import SingletonMeta
 from src.reviews.models.mongo import ProductReview
@@ -21,5 +22,6 @@ async def init_mongo_db():
         database=client.get_database(),
         document_models=[
             ProductReview,
+            ProductAnalytics
         ],
     )

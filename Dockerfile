@@ -2,11 +2,11 @@ FROM python:3.11
 
 WORKDIR /app
 
-COPY pyproject.toml pyproject.toml
+COPY pyproject.toml pyproject.toml poetry.lock ./
 
 RUN pip install poetry
 RUN poetry config virtualenvs.create false
-RUN poetry install --no-dev
+RUN poetry install --no-root
 
 COPY . /app
 

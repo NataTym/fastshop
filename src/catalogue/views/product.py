@@ -19,6 +19,7 @@ from src.catalogue.services import get_product_service
 from src.common.exceptions.base import ObjectDoesNotExistException
 from src.common.schemas.common import ErrorResponse
 
+from src.analytics.services import ProductAnalyticsService
 
 router = APIRouter(prefix=CatalogueRoutesPrefixes.product)
 
@@ -51,6 +52,7 @@ async def product_detail(
     response: Response,
     pk: int,
     service: Annotated[get_product_service, Depends()],
+    analytics_service: Annotated[ProductAnalyticsService, Depends()],
 ) -> Union[Response, ErrorResponse]:
     """
     Retrieve product.
@@ -59,6 +61,7 @@ async def product_detail(
         Response with product details.
     """
     try:
+        await analytics_service.visit_record(product_id=pk)
         response = await service.detail(pk=pk)
     except ObjectDoesNotExistException as exc:
         response.status_code = status.HTTP_404_NOT_FOUND
