@@ -11,6 +11,22 @@ from sqlmodel import (
 )
 
 
+class AdditionalProducts(SQLModel, table=True):
+    __tablename__ = 'additional_products'
+
+    primary_id: int = Field(foreign_key="products.id", primary_key=True)
+    additional_id: int = Field(foreign_key="products.id", primary_key=True)
+
+
+
+class RecommendedProducts(SQLModel, table=True):
+    __tablename__ = 'recommended_products'
+
+    primary_id: int = Field(foreign_key="products.id", primary_key=True)
+    recommended_id: int = Field(foreign_key="products.id", primary_key=True)
+
+
+
 class Product(SQLModel, table=True):
     __tablename__ = 'products'
 
@@ -24,6 +40,27 @@ class Product(SQLModel, table=True):
     images: List["ProductImage"] = Relationship(back_populates="product")
     stock_records: List["StockRecord"] = Relationship(back_populates="product")
     discounts: List["ProductDiscount"] = Relationship(back_populates="product")
+
+    primary_id: List["Product"] = Relationship(back_populates="additional_id",
+                                                          link_model=AdditionalProducts,
+                                                          sa_relationship_kwargs={"primaryjoin": "AdditionalProducts.primary_id==Product.id",
+                                                                                  "secondaryjoin": "AdditionalProducts.additional_id==Product.id"})
+    additional_id: List["Product"] = Relationship(back_populates="primary_id",
+                                                          link_model=AdditionalProducts,
+                                                          sa_relationship_kwargs={"primaryjoin": "AdditionalProducts.additional_id==Product.id",
+                                                                                  "secondaryjoin": "AdditionalProducts.primary_id==Product.id"})
+
+
+    recommended_primary_id: List["Product"] = Relationship(back_populates="recommended_id",
+                                                          link_model=RecommendedProducts,
+                                                          sa_relationship_kwargs={"primaryjoin": "RecommendedProducts.primary_id==Product.id",
+                                                                                  "secondaryjoin": "RecommendedProducts.recommended_id==Product.id"})
+    recommended_id: List["Product"] = Relationship(back_populates="recommended_primary_id",
+                                                          link_model=RecommendedProducts,
+                                                          sa_relationship_kwargs={"primaryjoin": "RecommendedProducts.recommended_id==Product.id",
+                                                                                  "secondaryjoin": "RecommendedProducts.primary_id==Product.id"})
+
+
 
 class ProductCategory(SQLModel, table=True):
     __tablename__ = 'product_categories'
@@ -90,3 +127,7 @@ class ProductDiscount(SQLModel, table=True):
     valid_to: datetime
 
     product: Product = Relationship(back_populates="discounts")
+
+
+
+

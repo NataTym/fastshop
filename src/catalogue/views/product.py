@@ -1,6 +1,6 @@
 from typing import (
     Annotated,
-    Union,
+    Union, List,
 )
 
 from fastapi import (
@@ -10,12 +10,12 @@ from fastapi import (
     status,
 )
 
-from src.catalogue.models.database import Product
+from src.catalogue.models.database import Product, AdditionalProducts, RecommendedProducts
 from src.catalogue.routes import (
     CatalogueRoutesPrefixes,
     ProductRoutesPrefixes,
 )
-from src.catalogue.services import get_product_service
+from src.catalogue.services import get_product_service, get_additional_product_service, get_recommended_product_service
 from src.common.exceptions.base import ObjectDoesNotExistException
 from src.common.schemas.common import ErrorResponse
 
@@ -65,3 +65,48 @@ async def product_detail(
         return ErrorResponse(message=exc.message)
 
     return response
+
+
+@router.get(
+    ProductRoutesPrefixes.additional,
+    responses={
+        status.HTTP_200_OK: {'model': AdditionalProducts},
+        status.HTTP_404_NOT_FOUND: {'model': ErrorResponse},
+    },
+    status_code=status.HTTP_200_OK,
+    response_model=Union[AdditionalProducts, ErrorResponse],
+)
+async def additional_products(
+    service: Annotated[get_additional_product_service, Depends()]) -> List[Product]:
+
+    return service.list()
+
+
+@router.get(
+    ProductRoutesPrefixes.recommended,
+    responses={
+        status.HTTP_200_OK: {'model': RecommendedProducts},
+        status.HTTP_404_NOT_FOUND: {'model': ErrorResponse},
+    },
+    status_code=status.HTTP_200_OK,
+    response_model=Union[RecommendedProducts, ErrorResponse],
+)
+async def recommended_products(
+    service: Annotated[get_recommended_product_service, Depends()]) -> Union[Response, ErrorResponse]:
+
+    return service.list()
+
+
+
+@router.post(
+    "/products/{product_id}/additional/{additional_id}",
+    response_model=AdditionalProducts,
+    status_code=status.HTTP_201_CREATED,
+)
+async def add_additional_product(
+    product_id: int,
+    additional_id: int,
+    service: Annotated[get_additional_product_service, Depends()]
+):
+    obj = AdditionalProducts(primary_id=product_id, additional_id=additional_id)
+    return await service.create(obj)
