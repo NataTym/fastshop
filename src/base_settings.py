@@ -17,7 +17,7 @@ class PostgresSettings(BaseModel):
     db: str = 'fastapi_shop'
     host: str = 'db'
     port: str = 5432
-    url: str = 'postgresql+asyncpg://:userpassword@db:5432/fastapi_shop'
+    url: str = 'postgresql+asyncpg://user:password@db:5432/fastapi_shop'
 
 
 class AuthorizationSettings(BaseModel):
